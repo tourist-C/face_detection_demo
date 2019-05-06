@@ -12,11 +12,7 @@
 #     - resize ROI into (200,200) to suit CNN input layers
 # -  Display result in real time
 
-
-
-
-
-
+# In[4]:
 
 
 import cv2 as cv
@@ -26,7 +22,7 @@ import os
 from keras.models import load_model
 
 
-
+# In[5]:
 
 
 def get_info(cap):
@@ -63,7 +59,7 @@ def get_info(cap):
     return info_dict
 
 
-
+# In[6]:
 
 
 def view_video_plus(input_video,scale=0.5):
@@ -106,7 +102,7 @@ def view_video_plus(input_video,scale=0.5):
     return info
 
 
-
+# In[7]:
 
 
 def export_to_jpgs(input_video,show_video=False,st_end=(100,200),export_dir="jpgs"):
@@ -145,7 +141,7 @@ def export_to_jpgs(input_video,show_video=False,st_end=(100,200),export_dir="jpg
     os.startfile(export_dir)
 
 
-
+# In[8]:
 
 
 def save_video(input_video,output_video,shape=(1280,720),FPS=30):
@@ -175,7 +171,7 @@ def save_video(input_video,output_video,shape=(1280,720),FPS=30):
     out.release()
 
 
-
+# In[9]:
 
 
 def save_cut_video(input_video,output_video,st_end=(10,20),shape=(1280,720),FPS=30):
@@ -213,7 +209,7 @@ def save_cut_video(input_video,output_video,st_end=(10,20),shape=(1280,720),FPS=
     out.release()
 
 
-
+# In[10]:
 
 
 def show_pic2(img,window_name="DISPLAY",pos=(0,0),scale=1):
@@ -228,7 +224,7 @@ def show_pic2(img,window_name="DISPLAY",pos=(0,0),scale=1):
         cv.destroyAllWindows()
 
 
-
+# In[13]:
 
 
 def show_pic(img,window_name="DISPLAY",pos=(0,0),scale=1):
@@ -245,7 +241,7 @@ def show_pic(img,window_name="DISPLAY",pos=(0,0),scale=1):
 
 # # Main
 
-
+# In[22]:
 
 
 # loading pretrained CNN model and labels detector
@@ -298,17 +294,16 @@ while cap.isOpened():
                     
                     
                     # for debugging, show the head frame for CNN model input
-#                     bbox = [x-padding_ratio*w , h+padding_ratio*h , x+(1+padding_ratio)*w , y+(1+padding_ratio)*h]
-#                     bbox = [int(i) for i in bbox]
-#                     pt1,pt2 = tuple(bbox[0:2]) , tuple(bbox[2:4])
-#                     cv.rectangle(frame,pt1,pt2,(0,0,255),2)
+                    topLeft = (x - int(padding_ratio * w) , y - int(padding_ratio * h))
+                    botRight = (x + int(w * (1 + padding_ratio)) , y + int(h * (1 + padding_ratio)))
+                    cv.rectangle(frame,topLeft,botRight,(0,0,255),2)
                     
                     # exception handling to avoid video from crashing when no head is detected or the input dims are wrong
                     try:
                         head = cv.resize(head, (200,200), interpolation = cv.INTER_AREA)
                         
-#                         for debugging, show the head frame for CNN model input
-                        show_pic(head,window_name=str(padding_ratio),pos=(1200,0))
+                        # for debugging, show the head frame for CNN model input
+                        show_pic(head,window_name=f"Padding Ratio: {str(padding_ratio)}",pos=(1200,0))
 
                         # reshape input to fit NN input
                         head_input = head.reshape(1,*head.shape)
@@ -343,4 +338,10 @@ while cap.isOpened():
 
 cap.release()
 cv.destroyAllWindows()
+
+
+# In[ ]:
+
+
+get_ipython().system('jupyter nbconvert --to python face_detction_demo.ipynb')
 
